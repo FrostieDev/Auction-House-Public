@@ -1,0 +1,42 @@
+﻿@model Auction_House_MVC.Models.InsertBidModel
+@{
+    ViewBag.Title = "InsertBid";
+    Layout = null;
+}
+
+<h2>Bid here</h2>
+
+<h4>Current highest bid: @Model.CurrentHighestBid</h4>
+<h3>Lowest possible bid: @Model.MinimumValidBid </h3>
+
+@using (Html.BeginForm("InsertBidDetail", "Auction", new { Model, id = Model.AuctionId }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <div>
+        <fieldset>
+            <!-- Bid amount -->
+            <div class="editor-label">
+                @Html.LabelFor(iB => iB.Amount)
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(iB => iB.Amount, new { type = "number", min = Model.MinimumValidBid, step = "0.50" })
+                <p style="color:red;">@Html.ValidationMessageFor(iB => iB.Amount)</p>
+            </div>
+            <input type="submit" value="Submit" class="btn btn-primary" />
+        </fieldset>
+    </div>
+}
+
+@if ((string)TempData["Referer"] == "InsertSuccessful")
+{
+    <div class="alert alert-success">
+        <strong>Your bid has been registered!</strong>
+    </div>
+}
+
+@if ((string)TempData["Referer"] == "InsertFailed")
+{
+    <div class="alert alert-danger">
+        <strong>Someone was faster than you! Please try a higher bid.</strong>
+    </div>
+}

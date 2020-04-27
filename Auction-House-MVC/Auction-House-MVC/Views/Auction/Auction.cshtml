@@ -1,0 +1,87 @@
+﻿@model Auction_House_MVC.Models.AuctionViewModel
+@{
+    ViewBag.Title = "Auction";
+}
+
+<style>
+    .borderSolid {
+        border-style: solid;
+        border-width: thin;
+        border-radius: 4px;
+        border-color: lightgray;
+    }
+
+    .marginTop {
+        margin: 10px 5px 10px 5px;
+    }
+
+    .marginBot {
+        margin: 0px 5px 10px 5px;
+    }
+
+    .imageSize {
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+<h2>@Model.AuctionInfoModel.Description</h2>
+
+<ul class="list-group">
+    <li class="list-group-item">
+    <h3 class="text-danger">Bid to beat: @Model.InsertBidModel.CurrentHighestBid</h3>
+    </li>
+    <li class="list-group-item">Category: @Model.AuctionInfoModel.Category</li>
+    <li class="list-group-item">Auction start date: @Model.AuctionInfoModel.StartDate</li>
+    <li class="list-group-item">Auction end date: @Model.AuctionInfoModel.EndDate</li>
+    <li class="list-group-item">Start Price: @Model.AuctionInfoModel.StartPrice</li>
+    <li class="list-group-item">Bid interval: @Model.AuctionInfoModel.BidInterval</li>
+    <li class="list-group-item">Buyout price: @Model.AuctionInfoModel.BuyOutPrice</li>
+    <li class="list-group-item">User name: @Model.AuctionInfoModel.UserName</li>
+    <li class="list-group-item">Place: @Model.AuctionInfoModel.UserLocation</li>
+</ul>
+
+<div class="container borderSolid">
+    @if (User.Identity.IsAuthenticated && User.Identity.Name.Equals(Model.AuctionInfoModel.UserName))
+    {
+        <div class="row marginTop">
+            @Html.ActionLink("Add Picture", "AddPictures", "Auction", new { id = Model.AuctionInfoModel.Id, userName = Model.AuctionInfoModel.UserName }, new { @class = "btn btn-info" })
+        </div>
+    }
+    <div class="row marginBot">
+        @for (int i = 0; i < Model.PictureViewModels.Count; i++)
+        {
+            <div class="col-sm-3">
+                <img src="@Url.Action("AuctionShowImage", new { id = Model.AuctionInfoModel.Id, fileName = Model.PictureViewModels.ElementAt(i).FileName , Model.AuctionInfoModel.UserName })"
+                     class="imageSize" />
+            </div>
+        }
+    </div>
+</div>
+
+@if (User.Identity.IsAuthenticated && !User.Identity.Name.Equals(Model.AuctionInfoModel.UserName))
+{
+    <div>
+        @Html.Action("InsertBid", new { insertBidModel = Model.InsertBidModel, id = Model.AuctionInfoModel.Id })
+    </div>
+}
+else if (User.Identity.Name.Equals(Model.AuctionInfoModel.UserName))
+{
+    <div class="badge badge-primary text-wrap alert-success marginTop">
+        <p>My auction</p>
+    </div>
+}
+else
+{
+    <div class="badge badge-primary text-wrap alert-danger marginTop">
+        <p>Log in to bid.</p>
+    </div>
+}
+
+<div>
+    <div class="container">
+        @Html.Action("ShowBids", new { Model.ShowBids })
+    </div>
+</div>
+
+

@@ -1,0 +1,12 @@
+﻿
+@{
+    ViewBag.Title = "MyAccount";
+}
+
+<h2>My account information</h2>
+
+@{ Html.RenderAction("UserInfoPartial"); }
+
+<h2>My auctions</h2>
+
+@{ Html.RenderAction("MyAuctionsPartial", "Auction");}
